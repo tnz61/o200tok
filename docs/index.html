@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>o200ktok — A Super Fast BPE Tokenizer</title>
+<title>o200ktok -- A Super Fast BPE Tokenizer</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -384,10 +384,10 @@
 <header class="hero">
   <div class="container">
     <div class="tag">High-Performance Tokenizer</div>
-    <h1><span class="mono">o200ktok</span> — A Super Fast BPE Tokenizer</h1>
-    <p class="subtitle">A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary — up to 14× faster than tiktoken, the fastest tokenizer available today.</p>
+    <h1><span class="mono">o200ktok</span> -- A Super Fast BPE Tokenizer</h1>
+    <p class="subtitle">A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary -- up to 14 times faster than tiktoken, the fastest tokenizer available today.</p>
     <div class="speedup-badge">
-      <span class="number">14.3×</span>
+      <span class="number">14.3 times</span>
       <span class="label">faster than tiktoken (parallel mode)</span>
     </div>
   </div>
@@ -399,14 +399,14 @@
     <h2>What Is a Tokenizer?</h2>
     <p>
       Before a large language model can read a single word you type, that text must be broken
-      into <strong>tokens</strong> — small chunks that map to numbers the model actually understands.
+      into <strong>tokens</strong> -- small chunks that map to numbers the model actually understands.
       Think of it as the translator sitting between human language and the neural network.
       The tokenizer splits your text into subwords, characters, or byte sequences using an algorithm
       called <strong>Byte-Pair Encoding (BPE)</strong>, then looks each piece up in a fixed vocabulary
       to produce a sequence of integer IDs.
     </p>
     <p>
-      This step is not optional. Every prompt, every document, every line of code — it all passes
+      This step is not optional. Every prompt, every document, every line of code -- it all passes
       through the tokenizer before the model sees it and again when the model's output is decoded
       back into text. A slow tokenizer becomes a bottleneck in data preprocessing, evaluation
       pipelines, and any workload that touches raw text at scale.
@@ -415,7 +415,7 @@
     <h2>Why Another Tokenizer?</h2>
     <p>
       OpenAI's <code>tiktoken</code> is the current gold standard for tokenizer performance.
-      Written in Rust with Python bindings, it is the fastest tokenizer available today —
+      Written in Rust with Python bindings, it is the fastest tokenizer available today --
       not just among BPE implementations, but across tokenizer libraries in general. As the
       SentencePiece benchmark later in this post shows, even a Rust-native SentencePiece
       implementation runs dramatically slower than tiktoken. When people benchmark tokenizers,
@@ -424,20 +424,20 @@
     </p>
     <p>
       The vocabulary in play here matters too. <code>o200k_base</code> is one of the largest
-      and most comprehensive BPE vocabularies in production use — 200,000 tokens, designed to
+      and most comprehensive BPE vocabularies in production use -- 200,000 tokens, designed to
       cover a wide range of languages, code, and special characters. It powers GPT-4o and later
       OpenAI models. A larger vocabulary means more merge rules to evaluate during encoding,
-      which makes fast tokenization harder, not easier. Achieving a 3× speedup on a vocabulary
+      which makes fast tokenization harder, not easier. Achieving a 3 times speedup on a vocabulary
       this size is a different challenge than doing it on a smaller, simpler one.
     </p>
     <p>
-      <code>o200ktok</code> is a standalone CLI tokenizer built for heavy workloads —
+      <code>o200ktok</code> is a standalone CLI tokenizer built for heavy workloads --
       data preprocessing, corpus analytics, batch evaluation.
       It implements the same BPE merge rules over the same <code>o200k_base</code> vocabulary,
-      producing <strong>bit-identical output</strong> — but it does so significantly faster
-      than the tool that currently holds the performance crown. On a single thread it's 3.6× faster;
+      producing <strong>bit-identical output</strong> -- but it does so significantly faster
+      than the tool that currently holds the performance crown. On a single thread it's 3.6 times faster;
       with the <code>--parallel</code> flag, which splits work across all available CPU cores,
-      it reaches <strong>14.3× faster</strong> than tiktoken on the same hardware.
+      it reaches <strong>14.3 times faster</strong> than tiktoken on the same hardware.
     </p>
 
     <h2>Benchmark</h2>
@@ -478,7 +478,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">1m 50.5s</div>
           </div>
-          <span class="speedup-tag">3.1× slower</span>
+          <span class="speedup-tag">3.1 times slower</span>
         </div>
       </div>
 
@@ -498,7 +498,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">3m 3.7s</div>
           </div>
-          <span class="speedup-tag">3.6× slower</span>
+          <span class="speedup-tag">3.6 times slower</span>
         </div>
       </div>
 
@@ -518,7 +518,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">1m 50.5s</div>
           </div>
-          <span class="speedup-tag">12.7× slower</span>
+          <span class="speedup-tag">12.7 times slower</span>
         </div>
       </div>
 
@@ -538,13 +538,13 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">3m 3.7s</div>
           </div>
-          <span class="speedup-tag">14.3× slower</span>
+          <span class="speedup-tag">14.3 times slower</span>
         </div>
       </div>
     </div>
 
     <p>
-      Here are the raw timing results — you can reproduce these yourself. No cherry-picking,
+      Here are the raw timing results -- you can reproduce these yourself. No cherry-picking,
       no warm caches, just <code>time</code> on the command line:
     </p>
 
@@ -592,7 +592,7 @@ sys     0m11.072s
 
     <p>
       And with the <code>--parallel</code> flag, <code>o200ktok</code> splits the work across
-      all available CPU cores — notice how <code>user</code> time exceeds <code>real</code> time,
+      all available CPU cores -- notice how <code>user</code> time exceeds <code>real</code> time,
       confirming true multi-core utilization:
     </p>
 
@@ -619,14 +619,14 @@ sys     0m4.882s
 
     <div class="output-match">
       <span class="check">✓</span>
-      All modes — single-thread, parallel, IDs-only, tokens — produced exactly 119,160,779 tokens with identical output.
+      All modes -- single-thread, parallel, IDs-only, tokens -- produced exactly 119,160,779 tokens with identical output.
     </div>
 
     <h2>Correctness First</h2>
     <p>
       Speed means nothing if the output is wrong. As the benchmark confirms, <code>o200ktok</code>
       produces <strong>byte-for-byte identical results</strong> to tiktoken on the full WikiText-103
-      training set — same token count, same token IDs, same decoded text. This holds in both
+      training set -- same token count, same token IDs, same decoded text. This holds in both
       single-thread and parallel mode. This isn't approximate compatibility; it's exact.
     </p>
     <p>
@@ -704,7 +704,7 @@ sys     0m4.882s
     </div>
 
     <p>
-      And the parallel mode? Same result — splitting work across cores doesn't affect correctness:
+      And the parallel mode? Same result -- splitting work across cores doesn't affect correctness:
     </p>
 
     <div class="terminal">
@@ -741,7 +741,7 @@ sys     0m4.882s
     </div>
 
     <p>
-      And the final proof — <code>wc</code> confirms every line, word, and byte matches exactly:
+      And the final proof -- <code>wc</code> confirms every line, word, and byte matches exactly:
     </p>
 
     <div class="terminal">
@@ -780,22 +780,23 @@ sys     0m4.882s
       <strong>Meta</strong> (LLaMA 1 &amp; 2),
       <strong>xAI</strong> (Grok-1),
       <strong>Mistral</strong>,
-      and the multilingual <strong>BLOOM</strong> model — among many others.
+      and the multilingual <strong>BLOOM</strong> model -- among many others.
       If you work with LLMs, there's a good chance you're running SentencePiece
       tokenization somewhere in your stack.
     </p>
     <p>
       To test whether the same performance principles apply, I built
-      <code>sentence-piece-tok</code> — a SentencePiece-compatible tokenizer using the
+      <code>sentence-piece-tok</code> -- a SentencePiece-compatible tokenizer using the
       Gemma 4 vocabulary (262,144 tokens, one of the largest SentencePiece vocabularies
       in production).
     </p>
     <p>
       For comparison, I benchmarked against <code>sptok</code>, a Rust-based SentencePiece
-      implementation. The result was surprising — but also confirms tiktoken's position as the
-      current performance champion: even a Rust implementation of SentencePiece
-      turned out to be dramatically slower than tiktoken, spending over 12 minutes on a job that
-      <code>sentence-piece-tok</code> finishes in 25 seconds with parallel mode.
+      implementation. The result was surprising -- but also confirms tiktoken's position as the
+      current performance champion: <code>sptok</code>, despite being written in Rust,
+      took over 12 minutes to tokenize the WikiText-103 corpus. My
+      <code>sentence-piece-tok</code> completed the same job in just 25 seconds
+      with parallel mode -- a 28.5 times speedup.
     </p>
 
     <div class="info-grid">
@@ -828,7 +829,7 @@ sys     0m4.882s
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">12m 11.7s</div>
           </div>
-          <span class="speedup-tag">12× slower</span>
+          <span class="speedup-tag">12 times slower</span>
         </div>
       </div>
 
@@ -848,13 +849,13 @@ sys     0m4.882s
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">12m 11.7s</div>
           </div>
-          <span class="speedup-tag">28.5× slower</span>
+          <span class="speedup-tag">28.5 times slower</span>
         </div>
       </div>
     </div>
 
     <p>
-      Here are the raw results. Note the extreme system time for <code>sptok</code> — over
+      Here are the raw results. Note the extreme system time for <code>sptok</code> -- over
       9 minutes of the 12-minute runtime is spent in kernel overhead:
     </p>
 
@@ -914,13 +915,13 @@ Encoded 541096899 chars -&gt; 121611599 tokens in 86831.941ms
 
     <div class="output-match">
       <span class="check">✓</span>
-      All three runs produced exactly 121,611,599 tokens with identical output — line count, word count, byte count all match.
+      All three runs produced exactly 121,611,599 tokens with identical output -- line count, word count, byte count all match.
     </div>
 
     <h2>Usage</h2>
     <p>
       <code>o200ktok</code> is a single-binary CLI tool. No Python environment, no pip install,
-      no dependency resolution — just download and run.
+      no dependency resolution -- just download and run.
     </p>
 
     <div class="terminal">
@@ -959,17 +960,17 @@ Batch mode (load once, process many files):
 
     <h2>When to Use It</h2>
     <p>
-      If you're building tooling around models that use the <code>o200k_base</code> vocabulary —
-      data pipelines, evaluation harnesses, token-counting utilities, corpus analysis scripts —
+      If you're building tooling around models that use the <code>o200k_base</code> vocabulary --
+      data pipelines, evaluation harnesses, token-counting utilities, corpus analysis scripts --
       <code>o200ktok</code> can drop in as a faster alternative with zero risk of
       output divergence. Since tiktoken currently delivers the best tokenizer performance
-      of any available library, being 3–14× faster than tiktoken means <code>o200ktok</code>
-      is faster than whatever tokenizer you're currently using — full stop. Add the <code>--parallel</code> flag on
+      of any available library, being 3–14 times faster than tiktoken means <code>o200ktok</code>
+      is faster than whatever tokenizer you're currently using -- full stop. Add the <code>--parallel</code> flag on
       multi-core machines and the gap widens even further.
     </p>
     <p>
       For SentencePiece-based models like Gemma 4, <code>sentence-piece-tok</code> delivers
-      the same dramatic speedups — over 28× faster than a Rust SentencePiece implementation
+      the same dramatic speedups -- over 28 times faster than a Rust SentencePiece implementation
       in parallel mode. The batch mode in both tools is particularly useful for preprocessing
       large datasets where the vocabulary-loading overhead of launching a separate process
       per file adds up quickly.
@@ -984,7 +985,7 @@ Batch mode (load once, process many files):
     <p>
       Download <code>o200ktok</code> and the <code>tokenizer.py</code> benchmark script:
     </p>
-    <a href="https://gitlab.com/nisnisa-group/o200k_tokenizer"
+    <a href="https://github.com/tnz61/o200tok/"
        target="_blank"
        style="display: inline-block;
               font-family: var(--font-mono);
@@ -997,14 +998,14 @@ Batch mode (load once, process many files):
               text-decoration: none;
               font-weight: 600;
               transition: opacity 0.2s;">
-      gitlab.com/nisnisa-group/o200k_tokenizer
+      github.com/tnz61/o200tok
     </a>
   </div>
 </section>
 
 <footer class="footer">
   <div class="container">
-    o200ktok &amp; sentence-piece-tok — fast, correct, compatible.
+    o200ktok &amp; sentence-piece-tok -- fast, correct, compatible.
   </div>
 </footer>
 
