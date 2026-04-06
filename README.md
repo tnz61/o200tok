@@ -1,8 +1,8 @@
 # o200ktok -- A Super Fast BPE Tokenizer
 
-**A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary -- up to 14 times faster than tiktoken, the fastest tokenizer available today.**
+**A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary -- up to 29 times faster than tiktoken, the fastest tokenizer available today.**
 
-> **14.3 times** faster than tiktoken (parallel mode)
+> **29.2 times** faster than tiktoken (parallel mode)
 
 ---
 
@@ -16,9 +16,9 @@ This step is not optional. Every prompt, every document, every line of code -- i
 
 OpenAI's `tiktoken` is the current gold standard for tokenizer performance. Written in Rust with Python bindings, it is the fastest tokenizer available today -- not just among BPE implementations, but across tokenizer libraries in general. As the SentencePiece benchmark later in this post shows, even a Rust-native SentencePiece implementation runs dramatically slower than tiktoken. When people benchmark tokenizers, tiktoken is the one to beat. Being faster than tiktoken means being faster than everything else.
 
-The vocabulary in play here matters too. `o200k_base` is one of the largest and most comprehensive BPE vocabularies in production use -- 200,000 tokens, designed to cover a wide range of languages, code, and special characters. It powers GPT-4o and later OpenAI models. A larger vocabulary means more merge rules to evaluate during encoding, which makes fast tokenization harder, not easier. Achieving a 3 times speedup on a vocabulary this size is a different challenge than doing it on a smaller, simpler one.
+The vocabulary in play here matters too. `o200k_base` is one of the largest and most comprehensive BPE vocabularies in production use -- 200,000 tokens, designed to cover a wide range of languages, code, and special characters. It powers GPT-4o and later OpenAI models. A larger vocabulary means more merge rules to evaluate during encoding, which makes fast tokenization harder, not easier. Achieving a 7 times speedup on a vocabulary this size is a different challenge than doing it on a smaller, simpler one.
 
-`o200ktok` is a standalone CLI tokenizer built for heavy workloads -- data preprocessing, corpus analytics, batch evaluation. It implements the same BPE merge rules over the same `o200k_base` vocabulary, producing **bit-identical output** -- but it does so significantly faster than the tool that currently holds the performance crown. On a single thread it's 3.6 times faster; with the `--parallel` flag, which splits work across all available CPU cores, it reaches **14.3 times faster** than tiktoken on the same hardware.
+`o200ktok` is a standalone CLI tokenizer built for heavy workloads -- data preprocessing, corpus analytics, batch evaluation. It implements the same BPE merge rules over the same `o200k_base` vocabulary, producing **bit-identical output** -- but it does so significantly faster than the tool that currently holds the performance crown. On a single thread it's up to 10.9 times faster; with the `--parallel` flag, which splits work across all available CPU cores, it reaches **29.2 times faster** than tiktoken on the same hardware.
 
 ## Benchmark
 
@@ -34,44 +34,44 @@ The test corpus is [WikiText-103 training set](https://huggingface.co/datasets/S
 
 | Tokenizer | Time | Comparison |
 |---|---|---|
-| **o200ktok** | **35.3s** | -- |
-| tiktoken | 1m 50.5s | 3.1 times slower |
+| **o200ktok** | **14.5s** | -- |
+| tiktoken | 1m 50.5s | 7.6 times slower |
 
 ### Single-Thread: Tokens + Text Mode
 
 | Tokenizer | Time | Comparison |
 |---|---|---|
-| **o200ktok** | **50.8s** | -- |
-| tiktoken | 3m 3.7s | 3.6 times slower |
+| **o200ktok** | **16.8s** | -- |
+| tiktoken | 3m 3.7s | 10.9 times slower |
 
 ### Parallel Mode: IDs-Only (multi-CPU)
 
 | Tokenizer | Time | Comparison |
 |---|---|---|
-| **o200ktok** | **8.7s** | -- |
-| tiktoken | 1m 50.5s | 12.7 times slower |
+| **o200ktok** | **4.5s** | -- |
+| tiktoken | 1m 50.5s | 24.4 times slower |
 
 ### Parallel Mode: Tokens + Text (multi-CPU)
 
 | Tokenizer | Time | Comparison |
 |---|---|---|
-| **o200ktok** | **12.9s** | -- |
-| tiktoken | 3m 3.7s | 14.3 times slower |
+| **o200ktok** | **6.3s** | -- |
+| tiktoken | 3m 3.7s | 29.2 times slower |
 
 Here are the raw timing results -- you can reproduce these yourself. No cherry-picking, no warm caches, just `time` on the command line:
 
 ```
 tkn@m1:> time o200ktok --tokens -ids-only /data/dt/wikitext103_train.txt > tknres/o200k_ids-only.txt
 
-real    0m35.276s
-user    0m33.524s
-sys     0m1.778s
+real    0m14.507s
+user    0m13.038s
+sys     0m1.589s
 
 tkn@m1:> time o200ktok --tokens /data/dt/wikitext103_train.txt > tknres/o200k_tokens.txt
 
-real    0m50.786s
-user    0m47.439s
-sys     0m3.527s
+real    0m16.754s
+user    0m13.689s
+sys     0m3.207s
 ```
 
 ```
@@ -93,15 +93,15 @@ And with the `--parallel` flag, `o200ktok` splits the work across all available 
 ```
 tkn@m1:> time o200ktok --tokens --parallel -ids-only -f /data/dt/wikitext103_train.txt > tknres/o200k_tokens_paral_ids.txt
 
-real    0m8.683s
-user    1m14.919s
-sys     0m2.106s
+real    0m4.533s
+user    0m27.685s
+sys     0m2.395s
 
 tkn@m1:> time o200ktok --tokens --parallel -f /data/dt/wikitext103_train.txt > tknres/o200k_tokens_paral.txt
 
-real    0m12.872s
-user    1m34.062s
-sys     0m4.882s
+real    0m6.288s
+user    0m28.681s
+sys     0m4.872s
 ```
 
 > ✅ All modes -- single-thread, parallel, IDs-only, tokens -- produced exactly 119,160,779 tokens with identical output.
@@ -309,14 +309,3 @@ Batch mode (load once, process many files):
   find /data -name "*.txt" | o200ktok --batch --tokens
   o200ktok --batch --summary < filelist.txt
 ```
-
-## When to Use It
-
-If you're building tooling around models that use the `o200k_base` vocabulary -- data pipelines, evaluation harnesses, token-counting utilities, corpus analysis scripts -- `o200ktok` can drop in as a faster alternative with zero risk of output divergence. Since tiktoken currently delivers the best tokenizer performance of any available library, being 3–14 times faster than tiktoken means `o200ktok` is faster than whatever tokenizer you're currently using -- full stop. Add the `--parallel` flag on multi-core machines and the gap widens even further.
-
-For SentencePiece-based models like Gemma 4, `sentence-piece-tok` delivers the same dramatic speedups -- over 28 times faster than a Rust SentencePiece implementation in parallel mode. The batch mode in both tools is particularly useful for preprocessing large datasets where the vocabulary-loading overhead of launching a separate process per file adds up quickly.
-
-
----
-
-*o200ktok & sentence-piece-tok -- fast, correct, compatible.*
