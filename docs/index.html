@@ -385,9 +385,9 @@
   <div class="container">
     <div class="tag">High-Performance Tokenizer</div>
     <h1><span class="mono">o200ktok</span> -- A Super Fast BPE Tokenizer</h1>
-    <p class="subtitle">A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary -- up to 14 times faster than tiktoken, the fastest tokenizer available today.</p>
+    <p class="subtitle">A high-performance BPE tokenizer compatible with OpenAI's o200k_base vocabulary -- up to 29 times faster than tiktoken, the fastest tokenizer available today.</p>
     <div class="speedup-badge">
-      <span class="number">14.3 times</span>
+      <span class="number">29.2 times</span>
       <span class="label">faster than tiktoken (parallel mode)</span>
     </div>
   </div>
@@ -427,7 +427,7 @@
       and most comprehensive BPE vocabularies in production use -- 200,000 tokens, designed to
       cover a wide range of languages, code, and special characters. It powers GPT-4o and later
       OpenAI models. A larger vocabulary means more merge rules to evaluate during encoding,
-      which makes fast tokenization harder, not easier. Achieving a 3 times speedup on a vocabulary
+      which makes fast tokenization harder, not easier. Achieving a 7 times speedup on a vocabulary
       this size is a different challenge than doing it on a smaller, simpler one.
     </p>
     <p>
@@ -435,9 +435,9 @@
       data preprocessing, corpus analytics, batch evaluation.
       It implements the same BPE merge rules over the same <code>o200k_base</code> vocabulary,
       producing <strong>bit-identical output</strong> -- but it does so significantly faster
-      than the tool that currently holds the performance crown. On a single thread it's 3.6 times faster;
+      than the tool that currently holds the performance crown. On a single thread it's up to 10.9 times faster;
       with the <code>--parallel</code> flag, which splits work across all available CPU cores,
-      it reaches <strong>14.3 times faster</strong> than tiktoken on the same hardware.
+      it reaches <strong>29.2 times faster</strong> than tiktoken on the same hardware.
     </p>
 
     <h2>Benchmark</h2>
@@ -469,7 +469,7 @@
         <div class="bar-row">
           <span class="bar-name">o200ktok</span>
           <div class="bar-track">
-            <div class="bar-fill fast" style="width: 32%;">35.3s</div>
+            <div class="bar-fill fast" style="width: 13%;">14.5s</div>
           </div>
           <span class="speedup-tag"></span>
         </div>
@@ -478,7 +478,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">1m 50.5s</div>
           </div>
-          <span class="speedup-tag">3.1 times slower</span>
+          <span class="speedup-tag">7.6 times slower</span>
         </div>
       </div>
 
@@ -489,7 +489,7 @@
         <div class="bar-row">
           <span class="bar-name">o200ktok</span>
           <div class="bar-track">
-            <div class="bar-fill fast" style="width: 28%;">50.8s</div>
+            <div class="bar-fill fast" style="width: 9%;">16.8s</div>
           </div>
           <span class="speedup-tag"></span>
         </div>
@@ -498,7 +498,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">3m 3.7s</div>
           </div>
-          <span class="speedup-tag">3.6 times slower</span>
+          <span class="speedup-tag">10.9 times slower</span>
         </div>
       </div>
 
@@ -509,7 +509,7 @@
         <div class="bar-row">
           <span class="bar-name">o200ktok</span>
           <div class="bar-track">
-            <div class="bar-fill parallel" style="width: 8%;">8.7s</div>
+            <div class="bar-fill parallel" style="width: 4%;">4.5s</div>
           </div>
           <span class="speedup-tag"></span>
         </div>
@@ -518,7 +518,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">1m 50.5s</div>
           </div>
-          <span class="speedup-tag">12.7 times slower</span>
+          <span class="speedup-tag">24.4 times slower</span>
         </div>
       </div>
 
@@ -529,7 +529,7 @@
         <div class="bar-row">
           <span class="bar-name">o200ktok</span>
           <div class="bar-track">
-            <div class="bar-fill parallel" style="width: 7%;">12.9s</div>
+            <div class="bar-fill parallel" style="width: 3.4%;">6.3s</div>
           </div>
           <span class="speedup-tag"></span>
         </div>
@@ -538,7 +538,7 @@
           <div class="bar-track">
             <div class="bar-fill slow" style="width: 100%;">3m 3.7s</div>
           </div>
-          <span class="speedup-tag">14.3 times slower</span>
+          <span class="speedup-tag">29.2 times slower</span>
         </div>
       </div>
     </div>
@@ -557,15 +557,15 @@
       <div class="terminal-body">
 <span class="prompt">tkn@m1:&gt;</span> <span class="cmd">time o200ktok --tokens -ids-only /data/dt/wikitext103_train.txt &gt; tknres/o200k_ids-only.txt</span>
 
-real    <span class="time">0m35.276s</span>
-user    0m33.524s
-sys     0m1.778s
+real    <span class="time">0m14.507s</span>
+user    0m13.038s
+sys     0m1.589s
 
 <span class="prompt">tkn@m1:&gt;</span> <span class="cmd">time o200ktok --tokens /data/dt/wikitext103_train.txt &gt; tknres/o200k_tokens.txt</span>
 
-real    <span class="time">0m50.786s</span>
-user    0m47.439s
-sys     0m3.527s
+real    <span class="time">0m16.754s</span>
+user    0m13.689s
+sys     0m3.207s
       </div>
     </div>
 
@@ -605,15 +605,15 @@ sys     0m11.072s
       <div class="terminal-body">
 <span class="prompt">tkn@m1:&gt;</span> <span class="cmd">time o200ktok --tokens --parallel -ids-only -f /data/dt/wikitext103_train.txt &gt; tknres/o200k_tokens_paral_ids.txt</span>
 
-real    <span class="time">0m8.683s</span>
-user    1m14.919s
-sys     0m2.106s
+real    <span class="time">0m4.533s</span>
+user    0m27.685s
+sys     0m2.395s
 
 <span class="prompt">tkn@m1:&gt;</span> <span class="cmd">time o200ktok --tokens --parallel -f /data/dt/wikitext103_train.txt &gt; tknres/o200k_tokens_paral.txt</span>
 
-real    <span class="time">0m12.872s</span>
-user    1m34.062s
-sys     0m4.882s
+real    <span class="time">0m6.288s</span>
+user    0m28.681s
+sys     0m4.872s
       </div>
     </div>
 
